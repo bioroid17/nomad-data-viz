@@ -34,5 +34,8 @@ app.layout = html.Div(
     ],
 )
 
+map_figure = px.scatter_geo(country_df)
+map_figure.show()
+
 if __name__ == "__main__":
     app.run(debug=True)
