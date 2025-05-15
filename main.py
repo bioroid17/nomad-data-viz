@@ -10,6 +10,24 @@ stylesheets = [
 
 app = Dash(__name__, external_stylesheets=stylesheets)
 
+bubble_map = px.scatter_geo(
+    country_df,
+    hover_name="Country_Region",
+    color="Confirmed",
+    locations="Country_Region",
+    locationmode="country names",
+    hover_data={
+        "Confirmed": ":,",
+        "Deaths": ":,",
+        "Recovered": ":,",
+        "Country_Region": False,
+    },
+    size="Confirmed",
+    size_max=40,
+    template="plotly_dark",
+    projection="natural earth",
+)
+
 app.layout = html.Div(
     style={
         "minHeight": "100vh",
@@ -30,12 +48,15 @@ app.layout = html.Div(
                 )
             ],
         ),
-        html.Div(children=[html.Div(children=[make_table(country_df)])]),
+        html.Div(
+            children=[
+                html.Div(children=[dcc.Graph(figure=bubble_map)]),
+                html.Div(children=[make_table(country_df)]),
+            ]
+        ),
     ],
 )
 
-map_figure = px.scatter_geo(country_df)
-map_figure.show()
 
 if __name__ == "__main__":
     app.run(debug=True)
