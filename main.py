@@ -26,7 +26,6 @@ bubble_map = px.scatter_geo(
     title="Confirmed By Country",
     size_max=40,
     template="plotly_dark",
-    projection="natural earth",
     color_continuous_scale=px.colors.sequential.Plotly3,
 )
 
@@ -39,11 +38,13 @@ bars_graph = px.bar(
     template="plotly_dark",
     title="Total Global Cases",
     hover_data={"count": ":,"},
+    labels={
+        "condition": "Condition",
+        "count": "Count",
+        "color": "Condition",
+    },
 )
-bars_graph.update_layout(
-    xaxis=dict(title="Condition"),
-    yaxis=dict(title="Count"),
-)
+bars_graph.update_traces(marker_color=["#e74c3c", "#8e44ad", "#27ae60"])
 
 app.layout = html.Div(
     style={
@@ -54,27 +55,34 @@ app.layout = html.Div(
     },
     children=[
         html.Header(
+            style={"textAlign": "center", "paddingTop": "50px"},
+            children=[html.H1("Corona Dashboard", style={"fontSize": 50})],
+        ),
+        html.Div(
             style={
-                "textAlign": "center",
-                "paddingTop": "50px",
+                "display": "grid",
+                "gridTemplateColumns": "repeat(4, 1fr)",
+                "gap": 50,
             },
             children=[
-                html.H1(
-                    "Corona Dashboard",
-                    style={"fontSize": 50},
-                )
+                html.Div(
+                    style={"gridColumn": "span 3"},
+                    children=[dcc.Graph(figure=bubble_map)],
+                ),
+                html.Div(
+                    children=[make_table(country_df)],
+                ),
             ],
         ),
         html.Div(
-            children=[
-                html.Div(children=[dcc.Graph(figure=bubble_map)]),
-                html.Div(children=[make_table(country_df)]),
-            ]
-        ),
-        html.Div(
+            style={
+                "display": "grid",
+                "gridTemplateColumns": "repeat(4, 1fr)",
+                "gap": 50,
+            },
             children=[
                 html.Div(children=[dcc.Graph(figure=bars_graph)]),
-            ]
+            ],
         ),
     ],
 )
