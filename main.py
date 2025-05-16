@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc
+from dash import Dash, html, dcc, Input, Output
 import plotly.express as px
 from data import country_df, totals_df
 from builders import make_table
@@ -82,10 +82,26 @@ app.layout = html.Div(
             },
             children=[
                 html.Div(children=[dcc.Graph(figure=bars_graph)]),
+                html.Div(
+                    children=[
+                        dcc.Input(placeholder="What is your name?", id="hello-input"),
+                        html.H2(children="Hello anonymous", id="hello-output"),
+                    ]
+                ),
             ],
         ),
     ],
 )
+
+
+@app.callback(
+    Output("hello-output", "children"),
+    [
+        Input("hello-input", "value"),
+    ],
+)
+def update_hello(value):
+    return f"Hello {value}" if value else "Hello anonymous"
 
 
 if __name__ == "__main__":
