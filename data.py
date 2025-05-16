@@ -16,6 +16,9 @@ country_df = (
     .reset_index()
 )
 
+dropdown_options = country_df.sort_values("Country_Region").reset_index()
+dropdown_options = dropdown_options["Country_Region"]
+
 
 def make_country_df(country):
 

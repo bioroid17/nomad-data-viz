@@ -1,6 +1,6 @@
 from dash import Dash, html, dcc, Input, Output
 import plotly.express as px
-from data import country_df, totals_df
+from data import country_df, totals_df, dropdown_options
 from builders import make_table
 
 stylesheets = [
@@ -82,12 +82,7 @@ app.layout = html.Div(
             },
             children=[
                 html.Div(children=[dcc.Graph(figure=bars_graph)]),
-                html.Div(
-                    children=[
-                        dcc.Input(placeholder="What is your name?", id="hello-input"),
-                        html.H2(children="Hello anonymous", id="hello-output"),
-                    ]
-                ),
+                html.Div(children=[dcc.Dropdown(id="country")]),
             ],
         ),
     ],
@@ -96,9 +91,7 @@ app.layout = html.Div(
 
 @app.callback(
     Output("hello-output", "children"),
-    [
-        Input("hello-input", "value"),
-    ],
+    [Input("country", "value")],
 )
 def update_hello(value):
     return f"Hello {value}" if value else "Hello anonymous"
