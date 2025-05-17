@@ -1,6 +1,12 @@
 from dash import Dash, html, dcc, Input, Output
 import plotly.express as px
-from data import country_df, totals_df, dropdown_options, make_global_df
+from data import (
+    country_df,
+    totals_df,
+    dropdown_options,
+    make_global_df,
+    make_country_df,
+)
 from builders import make_table
 
 stylesheets = [
@@ -83,6 +89,7 @@ app.layout = html.Div(
             children=[
                 html.Div(children=[dcc.Graph(figure=bars_graph)]),
                 html.Div(
+                    style={"gridColumn": "span 3"},
                     children=[
                         dcc.Dropdown(
                             id="country",
@@ -94,7 +101,7 @@ app.layout = html.Div(
                             placeholder="Select a country",
                         ),
                         dcc.Graph(id="country_graph"),
-                    ]
+                    ],
                 ),
             ],
         ),
@@ -107,8 +114,12 @@ app.layout = html.Div(
     [Input("country", "value")],
 )
 def update_graph(value):
+    if value:
+        df = make_country_df(value)
+    else:
+        df = make_global_df()
     fig = px.line(
-        make_global_df(),
+        df,
         x="date",
         y=["confirmed", "deaths", "recovered"],
         labels={"value": "Cases", "variable": "Condition", "date": "Date"},
